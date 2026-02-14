@@ -36,6 +36,24 @@ class CheckbookLedger:
         self.entries.append(entry)
         return entry
 
+    def update_entry(self, index, description, amount, entry_type):
+        if index < 0 or index >= len(self.entries):
+            raise IndexError("Entry index out of range")
+        if entry_type not in ("add", "subtract"):
+            raise ValueError("Entry type must be 'add' or 'subtract'")
+        entry = {
+            "description": normalize_description(description),
+            "amount": parse_amount(amount),
+            "type": entry_type,
+        }
+        self.entries[index] = entry
+        return entry
+
+    def delete_entry(self, index):
+        if index < 0 or index >= len(self.entries):
+            raise IndexError("Entry index out of range")
+        del self.entries[index]
+
     def clear(self):
         self.entries = []
 
@@ -47,9 +65,10 @@ class CheckbookLedger:
                 "description": "Starting Balance",
                 "amount": f"{running_total:.2f}",
                 "running_total": f"{running_total:.2f}",
+                "entry_index": None,
             }
         )
-        for entry in self.entries:
+        for index, entry in enumerate(self.entries):
             amount = entry["amount"]
             if entry["type"] == "add":
                 running_total += amount
@@ -62,6 +81,7 @@ class CheckbookLedger:
                     "description": entry["description"],
                     "amount": amount_display,
                     "running_total": f"{running_total:.2f}",
+                    "entry_index": index,
                 }
             )
         return rows
