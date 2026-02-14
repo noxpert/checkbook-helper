@@ -12,6 +12,7 @@ Since my wife and I still use a paper checkbook register, I want a simple way to
 - Run the app: `make run`
 - Or run `python checkbook_calculator.py`
 - Or run `python -m checkbook_helper`
+- Build a macOS app bundle: `make mac-app` (outputs to `dist/`)
 
 ## Keyboard Shortcuts
 - Add entry: `Ctrl+Enter`
@@ -23,6 +24,7 @@ Since my wife and I still use a paper checkbook register, I want a simple way to
 - Tkinter
 - Pytest
 - pytest-cov
+- py2app (macOS app bundle)
 
 ## AI Usage
 - Initial version generated with Claude AI
