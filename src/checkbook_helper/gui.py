@@ -10,7 +10,7 @@ class CheckbookApp:
     def __init__(self, root, ledger=None):
         self.root = root
         self.root.title("Checkbook Calculator")
-        self.root.geometry("1200x1000")
+        self.root.geometry("900x900")
 
         self.ledger = ledger or CheckbookLedger()
         self._editing_index = None
@@ -46,9 +46,28 @@ class CheckbookApp:
     def configure_styles(self):
         style = ttk.Style(self.root)
         style.configure("Treeview", rowheight=36)
-        style.configure("TButton", padding=(12, 16))
+        button_font = tkfont.nametofont("TkDefaultFont").copy()
+        heading_font = tkfont.nametofont("TkHeadingFont").copy()
+        button_font.configure(size=self.halve_font_size(button_font.cget("size")))
+        heading_font.configure(size=self.halve_font_size(heading_font.cget("size")))
+        style.configure("TButton", padding=(12, 0), font=button_font)
+        style.configure("Treeview.Heading", font=heading_font)
         style.configure("TLabelframe", padding=12)
         style.configure("TLabelframe.Label", padding=(6, 4))
+        self.button_ipady = self.calculate_button_ipady(69, button_font)
+
+    def halve_font_size(self, size):
+        if size == 0:
+            return size
+        new_size = int(size / 2)
+        if new_size == 0:
+            return 1 if size > 0 else -1
+        return new_size
+
+    def calculate_button_ipady(self, target_height_px, button_font):
+        text_height = button_font.metrics("linespace")
+        ipady = int((target_height_px - text_height) / 2)
+        return max(0, ipady)
 
     def bind_shortcuts(self):
         self.root.bind_all("<Control-Return>", self.handle_add_shortcut)
@@ -74,7 +93,7 @@ class CheckbookApp:
         balance_entry.grid(row=0, column=1, padx=5)
 
         ttk.Button(balance_frame, text="Update", command=self.update_totals).grid(
-            row=0, column=2, padx=5, ipady=8
+            row=0, column=2, padx=5, ipady=self.button_ipady
         )
 
         entry_frame = ttk.LabelFrame(self.root, text="Add Transaction", padding=12)
@@ -108,13 +127,13 @@ class CheckbookApp:
         ).grid(row=2, column=2, sticky="w")
 
         ttk.Button(entry_frame, text="Add Entry", command=self.add_entry).grid(
-            row=3, column=1, pady=10, sticky="w", ipady=8
+            row=3, column=1, pady=10, sticky="w", ipady=self.button_ipady
         )
         ttk.Button(entry_frame, text="Edit Selected", command=self.edit_selected).grid(
-            row=3, column=2, pady=10, sticky="w", ipady=8
+            row=3, column=2, pady=10, sticky="w", ipady=self.button_ipady
         )
         ttk.Button(entry_frame, text="Save Edit", command=self.save_edit).grid(
-            row=3, column=3, pady=10, sticky="w", ipady=8
+            row=3, column=3, pady=10, sticky="w", ipady=self.button_ipady
         )
 
         results_frame = ttk.LabelFrame(
@@ -146,13 +165,13 @@ class CheckbookApp:
         button_frame = ttk.Frame(self.root)
         button_frame.pack(fill="x", padx=15, pady=10)
         ttk.Button(button_frame, text="Help", command=self.show_help).pack(
-            side="left", padx=6, ipady=8
+            side="left", padx=6, ipady=self.button_ipady
         )
         ttk.Button(button_frame, text="Delete Selected", command=self.delete_selected).pack(
-            side="left", padx=6, ipady=8
+            side="left", padx=6, ipady=self.button_ipady
         )
         ttk.Button(button_frame, text="Clear All", command=self.clear_all).pack(
-            side="right", padx=6, ipady=8
+            side="right", padx=6, ipady=self.button_ipady
         )
 
     def handle_add_shortcut(self, event):
