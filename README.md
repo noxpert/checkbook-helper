@@ -13,6 +13,11 @@ Since my wife and I still use a paper checkbook register, I want a simple way to
 - Or run `python checkbook_calculator.py`
 - Or run `python -m checkbook_helper`
 
+## Keyboard Shortcuts
+- Add entry: `Ctrl+Enter`
+- Set type to add: `Ctrl++`
+- Set type to subtract: `Ctrl+-`
+
 ## Technology
 - Python 3.10+
 - Tkinter
